@@ -11,7 +11,7 @@ const Answer = (props) => {
   // const classes = useStyles();
   return (
     <div>
-      <Button variant="contained" color="primary">
+      <Button variant="contained" color="primary" onClick={() => props.select(props.content, props.nextID)}>
         {props.content}
       </Button>
     </div>
