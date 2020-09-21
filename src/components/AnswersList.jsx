@@ -2,7 +2,6 @@ import React from 'react';
 import { Answer } from "./index.js";
 
 const AnswersList = (props) => {
-  console.log(props.answers);
   return (
     <>
       <div className="c-grid__answer">
