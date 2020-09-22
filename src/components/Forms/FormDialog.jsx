@@ -6,15 +6,60 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+import TextInput from './TextInput.jsx'
 export default class FormDialog extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      name: "",
+      email: "",
+      description: ""
+    }
+    this.inputName = this.inputName.bind(this)
+    this.inputEmail = this.inputEmail.bind(this)
+    this.inputDescriotion = this.inputDescriotion.bind(this)
   }
   
+  inputName = (event) => {
+    this.setState({name: event.target.value})
+  }
+
+  inputEmail = (event) => {
+    this.setState({email: event.target.value})
+  }
+
+  inputDescriotion = (event) => {
+    this.setState({description: event.target.value})
+  }
+
+  submitForm = () => {
+    const name = this.state.name
+    const email = this.state.email
+    const description = this.state.description
+
+    const payload = {
+      text: "お問い合わせがありました\n" +
+            "お名前:" + name + "\n" +
+            "Email:" + email + "\n" +
+            "問合せ内容:\n" + description
+          
+    }
+    const url = "https://hooks.slack.com/services/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"
+
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify(payload)
+    }).then(() => {
+      alert("送信が完了しました。追ってご連絡します！")
+      this.setState({
+        name: "",
+        email: "",
+        description: ""
+      })
+      return this.props.handleClose()
+    })
+  }
   
-
-
-
   render() {
     return(
       <Dialog
@@ -23,19 +68,29 @@ export default class FormDialog extends React.Component {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{"お問い合わせフォーム"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending anonymous location data to
-            Google, even when no apps are running.
+            <TextInput 
+              label={"お名前（必須）"} multiline={false} rows={1}
+              value={this.state.name} type={"text"} onChange={this.inputName}
+            />
+            <TextInput 
+              label={"メールアドレス（必須）"} multiline={false} rows={1}
+              value={this.state.email} type={"email"} onChange={this.inputEmail}
+            />
+            <TextInput 
+              label={"お問い合わせ"} multiline={true} rows={5}
+              value={this.state.description} type={"text"} onChange={this.inputDescriotion}
+            />
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={this.props.handleClose} color="primary">
-            Disagree
+            キャンセル
           </Button>
-          <Button onClick={this.props.handleClose} color="primary" autoFocus>
-            Agree
+          <Button onClick={this.submitForm} color="primary" autoFocus>
+            送信する
           </Button>
         </DialogActions>
       </Dialog>
